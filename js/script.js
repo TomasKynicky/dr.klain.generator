@@ -48,14 +48,28 @@ function stopVto() {
     fitmixInstance.stopVto();
 }
 
-function showRendered(data) {
-
+function showRendered(data, ean) {
     if (!data.data || data.data.trim() === "") {
         console.log("No src provided: data.data is null or blank.");
         return;
     }
 
-    $("#result").append('<div class="col-md-3 mb-4"><img src="' + data.data + '" class="img-fluid imgResult" /></div>');
+    const container = document.createElement("div");
+    container.className = "col-md-3 mb-4";
+
+    const eanText = document.createElement("p");
+    eanText.innerText = "EAN: " + ean;
+    eanText.style.textAlign = "center";
+
+    // Create the image element
+    const imgElement = document.createElement("img");
+    imgElement.src = data.data;
+    imgElement.className = "img-fluid imgResult";
+
+    container.appendChild(eanText);
+    container.appendChild(imgElement);
+
+    document.getElementById("result").appendChild(container);
 }
 
 // Generate BTN
@@ -100,15 +114,13 @@ function generateFrame(frame) {
         fitmixInstance.setFrame([frame]);
         fitmixInstance.setTryonPicture(base64Image);
 
-        // Assuming `onPhotoRender` is called when the image is rendered
         params.onPhotoRender = (data) => {
-            showRendered(data);
+            showRendered(data, frame);
             decreaseFrameCount();
             resolve();
         };
     });
 }
-
 function addLoadingPlaceholders(count) {
     const loadingImagesContainer = document.getElementById("result");
     for (let i = 0; i < count; i++) {
