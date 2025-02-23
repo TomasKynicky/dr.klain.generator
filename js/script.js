@@ -49,12 +49,17 @@ function stopVto() {
 }
 
 function showRendered(data) {
-    $("#result").append('<li><img src="' + data.data + '" width="300px" /></li>');
+
+    if (!data.data || data.data.trim() === "") {
+        console.log("No src provided: data.data is null or blank.");
+        return;
+    }
+
+    $("#result").append('<div class="col-md-3 mb-4"><img src="' + data.data + '" class="img-fluid imgResult" /></div>');
 }
 
 // Generate BTN
-// Generate BTN
-document.getElementById("generate").addEventListener("click", function () {
+document.getElementById("generate").addEventListener("click", async function () {
     if (base64Image) {
         const selectedFrames = [];
         document.querySelectorAll('.gallery-img.active').forEach(img => {
@@ -75,9 +80,8 @@ document.getElementById("generate").addEventListener("click", function () {
         // Přidání placeholderů
         addLoadingPlaceholders(selectedFrames.length);
 
-        selectedFrames.forEach(frame => {
-            fitmixInstance.setFrame([frame]);
-            fitmixInstance.setTryonPicture(base64Image);
+        for (const frame of selectedFrames) {
+            await generateFrame(frame);
             generatedFrames.add(frame);
 
             document.querySelectorAll('.gallery-img').forEach(img => {
@@ -85,11 +89,25 @@ document.getElementById("generate").addEventListener("click", function () {
                     img.style.display = 'none';
                 }
             });
-        });
+        }
     } else {
         alert("Nejprve nahrajte fotografii.");
     }
 });
+
+function generateFrame(frame) {
+    return new Promise((resolve) => {
+        fitmixInstance.setFrame([frame]);
+        fitmixInstance.setTryonPicture(base64Image);
+
+        // Assuming `onPhotoRender` is called when the image is rendered
+        params.onPhotoRender = (data) => {
+            showRendered(data);
+            decreaseFrameCount();
+            resolve();
+        };
+    });
+}
 
 function addLoadingPlaceholders(count) {
     const loadingImagesContainer = document.getElementById("loadingImages");
@@ -186,7 +204,7 @@ $(document).ready(function () {
         if ($gallery.length) {
             $gallery.empty();
             $.each(value, function (index, image) {
-                const $col = $("<div>").addClass("col");
+                const $col = $("<div>").addClass("col-md-3");
                 const $img = $("<img>")
                     .attr("src", image.src)
                     .addClass("img-fluid gallery-img")
