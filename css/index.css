@@ -1,0 +1,18 @@
+.gallery-img {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    border: 3px solid transparent;
+}
+.gallery-img:hover {
+    transform: scale(1.05);
+}
+.gallery-img.active {
+    border-color: #007bff;
+    transform: scale(1.1);
+}
+
+#fitmix-container {
+    width : 300px;
+    height : 300px;
+    display:none;
+}
