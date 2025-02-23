@@ -110,7 +110,7 @@ function generateFrame(frame) {
 }
 
 function addLoadingPlaceholders(count) {
-    const loadingImagesContainer = document.getElementById("loadingImages");
+    const loadingImagesContainer = document.getElementById("result");
     for (let i = 0; i < count; i++) {
         const placeholder = document.createElement("div");
         placeholder.className = "loading-placeholder";
@@ -120,7 +120,7 @@ function addLoadingPlaceholders(count) {
 }
 
 function removeLoadingPlaceholder() {
-    const loadingImagesContainer = document.getElementById("loadingImages");
+    const loadingImagesContainer = document.getElementById("result");
     if (loadingImagesContainer.children.length > 0) {
         loadingImagesContainer.removeChild(loadingImagesContainer.children[0]);
     }
