@@ -38,3 +38,9 @@
     width: 3rem;
     height: 3rem;
 }
+
+.imgResult{
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
