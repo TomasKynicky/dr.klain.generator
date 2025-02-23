@@ -1,5 +1,6 @@
 let base64Image = "";
 let generatedFrames = new Set();
+let countFramesToGenerate = 0;
 
 function handleImageClick(clickedImg) {
     clickedImg.classList.toggle('active');
@@ -11,6 +12,7 @@ var params = {
     onAgreePrivacyTerms: hide,
     onPhotoRender: (data) => {
         showRendered(data);
+        decreaseFrameCount();
     },
     dataPrivacyDisclaimerTexts: {}
 };
@@ -51,6 +53,7 @@ function showRendered(data) {
 }
 
 // Generate BTN
+// Generate BTN
 document.getElementById("generate").addEventListener("click", function () {
     if (base64Image) {
         const selectedFrames = [];
@@ -65,6 +68,12 @@ document.getElementById("generate").addEventListener("click", function () {
             alert("Vyberte alespoň jedny brýle, které ještě nebyly vygenerovány.");
             return;
         }
+
+        countFramesToGenerate += selectedFrames.length; // Zvýšení počtu generovaných obrázků
+        console.log("Počet obrázků k vygenerování: " + countFramesToGenerate);
+
+        // Přidání placeholderů
+        addLoadingPlaceholders(selectedFrames.length);
 
         selectedFrames.forEach(frame => {
             fitmixInstance.setFrame([frame]);
@@ -81,6 +90,31 @@ document.getElementById("generate").addEventListener("click", function () {
         alert("Nejprve nahrajte fotografii.");
     }
 });
+
+function addLoadingPlaceholders(count) {
+    const loadingImagesContainer = document.getElementById("loadingImages");
+    for (let i = 0; i < count; i++) {
+        const placeholder = document.createElement("div");
+        placeholder.className = "loading-placeholder";
+        placeholder.innerHTML = '<span class="sr-only">Loading...</span><div class="spinner-border text-primary" role="status"></div>';
+        loadingImagesContainer.appendChild(placeholder);
+    }
+}
+
+function removeLoadingPlaceholder() {
+    const loadingImagesContainer = document.getElementById("loadingImages");
+    if (loadingImagesContainer.children.length > 0) {
+        loadingImagesContainer.removeChild(loadingImagesContainer.children[0]);
+    }
+}
+
+function decreaseFrameCount() {
+    if (countFramesToGenerate > 0) {
+        countFramesToGenerate--;
+        console.log("Počet obrázků k vygenerování: " + countFramesToGenerate);
+        removeLoadingPlaceholder();
+    }
+}
 
 function convertToBase64() {
     const fileInput = document.getElementById('fileInput');
