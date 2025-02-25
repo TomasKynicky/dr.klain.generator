@@ -7,7 +7,7 @@ function handleImageClick(clickedImg) {
 }
 
 var params = {
-    apiKey: 'X2jYvgRy7LnBexatVDTHYwGr3Ojh0RDrvOyKkbXT',
+    apiKey: 'TEST',
     onStopVto: hide,
     onAgreePrivacyTerms: hide,
     onPhotoRender: (data) => {
