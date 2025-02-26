@@ -169,9 +169,9 @@ function convertToBase64() {
 $(document).ready(function () {
     const data = {
         "rectangular": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "0886895597807"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "0888392486523"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8056597233958"}
+            {"src": "images/0886895624275.jpeg", "ean": "0886895624275"},
+            {"src": "images/886895588775.jpeg", "ean": "886895588775"},
+            {"src": "images/0886895497794.jpeg", "ean": "0886895497794"}
         ],
         "oval": [
             {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8053672909258"},
