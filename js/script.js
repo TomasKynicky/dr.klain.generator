@@ -55,7 +55,7 @@ function showRendered(data, ean) {
     }
 
     const container = document.createElement("div");
-    container.className = "col-md-6";
+    container.className = "col-xxl-4 col-xl-6";
 
    /* const eanText = document.createElement("p");
     eanText.innerText = "EAN: " + ean;
@@ -138,7 +138,7 @@ function addLoadingPlaceholders(count) {
     for (let i = 0; i < count; i++) {
         const placeholder = document.createElement("div");
         placeholder.className = "loading-placeholder";
-        placeholder.innerHTML = '<span class="sr-only">Generuji...</span><div class="spinner-border text-primary" role="status"></div>';
+        placeholder.innerHTML = '<div class="spinner-border text-primary" role="status"></div>';
         loadingImagesContainer.appendChild(placeholder);
     }
 }
