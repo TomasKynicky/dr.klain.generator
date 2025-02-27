@@ -7,7 +7,7 @@ function handleImageClick(clickedImg) {
 }
 
 var params = {
-    apiKey: 'TEST',
+    apiKey: 'X2jYvgRy7LnBexatVDTHYwGr3Ojh0RDrvOyKkbXT',
     onStopVto: hide,
     onAgreePrivacyTerms: hide,
     onPhotoRender: (data) => {
@@ -187,64 +187,116 @@ function convertToBase64() {
 $(document).ready(function () {
     const data = {
         "rectangular": [
-            {"src": "images/0886895624275.jpeg", "ean": "0886895624275"},
-            {"src": "images/886895588775.jpeg", "ean": "886895588775"},
-            {"src": "images/0886895497794.jpeg", "ean": "0886895497794"}
+            {"src": "images/0886895624275.jpeg", "ean": "0886895624275", "type": "men"},
+            {"src": "images/886895588775.jpeg", "ean": "886895588775", "type": "woman"},
+            {"src": "images/0886895497794.jpeg", "ean": "0886895497794", "type": "men"}
         ],
         "oval": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8053672909258"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "0888392486523"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8056597233958"}
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8053672909258", "type": "woman"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "0888392486523", "type": "men"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8056597233958", "type": "woman"}
         ],
         "square": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567892"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543212"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334452"}
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567892", "type": "men"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543212", "type": "woman"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334452", "type": "men"}
         ],
         "round": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567893"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543213"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334453"}
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567893", "type": "woman"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543213", "type": "men"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334453", "type": "woman"}
         ],
         "aviator": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567894"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543214"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334454"}
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567894", "type": "men"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543214", "type": "woman"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334454", "type": "men"}
         ],
         "cat-eye": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567895"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543215"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334455"}
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567895", "type": "woman"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543215", "type": "men"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334455", "type": "woman"}
         ],
         "wayfarer": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567896"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543216"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334456"}
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567896", "type": "men"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543216", "type": "woman"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334456", "type": "men"}
         ],
         "oversize": [
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567897"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543217"},
-            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334457"}
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567897", "type": "woman"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543217", "type": "men"},
+            {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334457", "type": "woman"}
         ]
     };
-    // Set data to HTML
-    $.each(data, function (key, value) {
-        const galleryId = "#gal-" + key;
-        const $gallery = $(galleryId + " .row.row-cols-12");
-        if ($gallery.length) {
-            $gallery.empty();
-            $.each(value, function (index, image) {
-                const $col = $("<div>").addClass("col-md-3");
-                const $img = $("<img>")
-                    .attr("src", image.src)
-                    .addClass("img-fluid gallery-img")
-                    .attr("data-ean", image.ean)
-                    .attr("onclick", "handleImageClick(this)");
-                $col.append($img);
-                $gallery.append($col);
-            });
-        } else {
-            console.error("Galerie s ID " + galleryId + " nebyla nalezena.");
-        }
+
+    let selectedType = null;
+    document.getElementById("type-select").addEventListener("change", function () {
+        selectedType = this.value;
+        filterGlasses(selectedType);
     });
+
+    function filterGlasses(type) {
+        $.each(data, function (key, value) {
+            const galleryId = "#gal-" + key;
+            const $gallery = $(galleryId + " .row.row-cols-12");
+            if ($gallery.length) {
+                $gallery.empty();
+                $.each(value, function (index, image) {
+                    if (selectedType === null || selectedType === "all" || selectedType === image.type) {
+                        const $col = $("<div>").addClass("col-md-3");
+                        const $img = $("<img>")
+                            .attr("src", image.src)
+                            .addClass("img-fluid gallery-img")
+                            .attr("data-ean", image.ean)
+                            .attr("onclick", "handleImageClick(this)");
+                        $col.append($img);
+                        $gallery.append($col);
+                    }
+                });
+            } else {
+                console.error("Galerie s ID " + galleryId + " nebyla nalezena.");
+            }
+        });
+    }
+
+    filterGlasses(selectedType);
 });
+
+// TODO
+const collectionId = '1ba4e949-9290-4b1a-9e53-715e5d118b8d';
+const apiKey = 'fittingbox/97973cd7b4475577be04ccec260615fb';
+const baseUrl = 'https://api.widencollective.com/v2/collections';
+
+const headers = {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json'
+};
+
+async function getCollectionDetails() {
+    const response = await fetch(`${baseUrl}/${collectionId}`, { headers });
+    if (!response.ok) {
+        throw new Error(`Chyba: HTTP kód ${response.status}`);
+    }
+    return response.json();
+}
+
+async function getCollectionAssets() {
+    const response = await fetch(`${baseUrl}/${collectionId}/assets`, { headers });
+    if (!response.ok) {
+        throw new Error(`Chyba: HTTP kód ${response.status}`);
+    }
+    return response.json();
+}
+
+async function displayCollectionData() {
+    try {
+        const collectionDetails = await getCollectionDetails();
+        console.log('Detaily kolekce:', collectionDetails);
+
+        const assetsData = await getCollectionAssets();
+        console.log('Aktiva v kolekci:', assetsData);
+    } catch (error) {
+        console.error('Chyba:', error.message);
+    }
+}
+
+displayCollectionData();
