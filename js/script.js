@@ -66,8 +66,16 @@ function showRendered(data, ean) {
     imgElement.src = data.data;
     imgElement.className = "img-fluid imgResult";
 
+    const downloadBtn = document.createElement("a");
+    downloadBtn.innerText = "Stáhnout";
+    downloadBtn.style.textAlign = "center";
+    downloadBtn.download = ean + ".jpg";
+    downloadBtn.href = data.data;
+
+
     container.appendChild(eanText);
     container.appendChild(imgElement);
+    container.appendChild(downloadBtn);
 
     document.getElementById("result").appendChild(container);
 }
@@ -100,7 +108,7 @@ document.getElementById("generate").addEventListener("click", async function () 
 
             document.querySelectorAll('.gallery-img').forEach(img => {
                 if ($(img).data("ean") === frame) {
-                    img.style.display = 'none';
+                    $(img).parent().hide(300);
                 }
             });
         }
@@ -126,7 +134,7 @@ function addLoadingPlaceholders(count) {
     for (let i = 0; i < count; i++) {
         const placeholder = document.createElement("div");
         placeholder.className = "loading-placeholder";
-        placeholder.innerHTML = '<span class="sr-only">Loading...</span><div class="spinner-border text-primary" role="status"></div>';
+        placeholder.innerHTML = '<span class="sr-only">Generuji...</span><div class="spinner-border text-primary" role="status"></div>';
         loadingImagesContainer.appendChild(placeholder);
     }
 }
