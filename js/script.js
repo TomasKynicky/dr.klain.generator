@@ -55,11 +55,11 @@ function showRendered(data, ean) {
     }
 
     const container = document.createElement("div");
-    container.className = "col-md-3 mb-4";
+    container.className = "col-md-6";
 
-    const eanText = document.createElement("p");
+   /* const eanText = document.createElement("p");
     eanText.innerText = "EAN: " + ean;
-    eanText.style.textAlign = "center";
+    eanText.style.textAlign = "center";*/
 
     // Create the image element
     const imgElement = document.createElement("img");
@@ -72,15 +72,19 @@ function showRendered(data, ean) {
     downloadBtn.download = ean + ".jpg";
     downloadBtn.href = data.data;
 
+    downloadBtn.addEventListener("click", function() {
+        downloadBtn.classList.add("red");
+    });
 
-    container.appendChild(eanText);
+
+    //container.appendChild(eanText);
     container.appendChild(imgElement);
     container.appendChild(downloadBtn);
 
     document.getElementById("result").appendChild(container);
 }
 
-// Generate BTN
+
 document.getElementById("generate").addEventListener("click", async function () {
     if (base64Image) {
         const selectedFrames = [];
@@ -163,7 +167,13 @@ function convertToBase64() {
         reader.readAsDataURL(file);
         reader.onload = function () {
             base64Image = reader.result;
-            document.getElementById('base64Output').innerText = "Fotografie nahrána.";
+
+            const imgElement = document.createElement("img");
+            imgElement.src = base64Image;
+            imgElement.className = "img-fluid imgPreview";
+
+            document.getElementById("preview").appendChild(imgElement);
+
             $('#glassResult').hide();
             $('#glass-selector').show(200);
         };
