@@ -5,29 +5,29 @@ let isGenerating = false;
 
 function handleImageClick(clickedImg) {
     if (!isGenerating) {
-        clickedImg.classList.toggle('active');
+        $(clickedImg).toggleClass('active');
     }
 }
 
-document.getElementById("pdSlider").addEventListener("input", function () {
-    document.getElementById("pdValue").innerText = this.value;
+$("#pdSlider").on("input", function () {
+    $("#pdValue").text($(this).val());
 });
 
 var params = {
     apiKey: 'X2jYvgRy7LnBexatVDTHYwGr3Ojh0RDrvOyKkbXT',
     onStopVto: hide,
     onAgreePrivacyTerms: hide,
-    onPhotoRender: (data) => {
+    onPhotoRender: function (data) {
         showRendered(data);
         decreaseFrameCount();
     },
     dataPrivacyDisclaimerTexts: {}
 };
 
-window.onload = function () {
+$(window).on("load", function () {
     window.fitmixInstance = FitMix.createWidget('fitmix-container', params, function () {
         openVto();
-        var data = {
+        let data = {
             liveCameraAccessDenied: true,
             livePhotoButton: false,
             photoLiveButton: false,
@@ -35,16 +35,14 @@ window.onload = function () {
         };
         fitmixInstance.setUiConfiguration(data);
     });
-};
-
-const fitmix = document.getElementById("fitmix-container");
+});
 
 function hide() {
-    fitmix.style.display = 'none';
+    $("#fitmix-container").hide();
 }
 
 function show() {
-    fitmix.style.display = 'block';
+    $("#fitmix-container").show();
 }
 
 function openVto() {
@@ -56,46 +54,39 @@ function stopVto() {
 }
 
 function showRendered(data, ean) {
-    if (!data.data || data.data.trim() === "") {
+    if (!data.data || $.trim(data.data) === "") {
         console.log("No src provided: data.data is null or blank.");
         return;
     }
 
-    const container = document.createElement("div");
-    container.className = "col-md-4 col-xxl-4 col-xl-6";
+    let $container = $("<div>").addClass("col-md-4 col-xxl-4 col-xl-6");
+    let $imgElement = $("<img>").attr("src", data.data)
+                                .addClass("img-fluid imgResult mt-3 mb-3 p-2");
 
-    const imgElement = document.createElement("img");
-    imgElement.src = data.data;
-    imgElement.className = "img-fluid imgResult mt-3 mb-3 p-2";
+    let $downloadBtn = $("<a>")
+        .text("Stáhnout")
+        .css("text-align", "center")
+        .attr({ download: ean + ".jpg", href: data.data })
+        .addClass("btn btn-success w-100 mt-3");
 
-    const downloadBtn = document.createElement("a");
-    downloadBtn.innerText = "Stáhnout";
-    downloadBtn.style.textAlign = "center";
-    downloadBtn.download = ean + ".jpg";
-    downloadBtn.href = data.data;
-    downloadBtn.className = "btn btn-success w-100 mt-3";
-
-    downloadBtn.addEventListener("click", function () {
-        downloadBtn.classList.add("btn-danger");
-        downloadBtn.classList.remove("btn-success");
+    $downloadBtn.on("click", function () {
+        $(this).removeClass("btn-success").addClass("btn-danger");
     });
 
-    container.appendChild(imgElement);
-    container.appendChild(downloadBtn);
-
-    document.getElementById("result").appendChild(container);
+    $container.append($imgElement, $downloadBtn);
+    $("#result").append($container);
 }
 
-document.getElementById("generate").addEventListener("click", async function () {
+$("#generate").on("click", async function () {
     if (isGenerating) {
         alert("Generování již probíhá. Počkejte, prosím.");
         return;
     }
 
     if (base64Image) {
-        const selectedFrames = [];
-        document.querySelectorAll('.gallery-img.active').forEach(img => {
-            const ean = $(img).data("ean");
+        let selectedFrames = [];
+        $(".gallery-img.active").each(function () {
+            let ean = $(this).data("ean");
             if (!generatedFrames.has(ean)) {
                 selectedFrames.push(ean);
             }
@@ -111,13 +102,13 @@ document.getElementById("generate").addEventListener("click", async function () 
 
         addLoadingPlaceholders(selectedFrames.length);
 
-        for (const frame of selectedFrames) {
+        for (let frame of selectedFrames) {
             await generateFrame(frame);
             generatedFrames.add(frame);
 
-            document.querySelectorAll('.gallery-img').forEach(img => {
-                if ($(img).data("ean") === frame) {
-                    $(img).parent().hide(300);
+            $(".gallery-img").each(function () {
+                if ($(this).data("ean") === frame) {
+                    $(this).parent().hide(300);
                 }
             });
         }
@@ -132,13 +123,13 @@ document.getElementById("generate").addEventListener("click", async function () 
 });
 
 function generateFrame(frame) {
-    const pdValue = document.getElementById("pdSlider").value;
+    let pdValue = $("#pdSlider").val();
     return new Promise((resolve) => {
         fitmixInstance.setPupillaryDistance(parseInt(pdValue));
         fitmixInstance.setFrame([frame]);
         fitmixInstance.setTryonPicture(base64Image);
 
-        params.onPhotoRender = (data) => {
+        params.onPhotoRender = function (data) {
             showRendered(data, frame);
             decreaseFrameCount();
             resolve();
@@ -147,29 +138,24 @@ function generateFrame(frame) {
 }
 
 function addLoadingPlaceholders(count) {
-    const loadingImagesContainer = document.getElementById("result");
+    let $loadingImagesContainer = $("#result");
     for (let i = 0; i < count; i++) {
-        const placeholder = document.createElement("div");
-        placeholder.className = "loading-placeholder";
-        placeholder.innerHTML = '<div class="spinner-border text-primary" role="status"></div>';
-        loadingImagesContainer.appendChild(placeholder);
+        let $placeholder = $("<div>")
+            .addClass("loading-placeholder")
+            .html('<div class="spinner-border text-primary" role="status"></div>');
+        $loadingImagesContainer.append($placeholder);
     }
 }
 
 function removeLoadingPlaceholder() {
-    const loadingImagesContainer = document.getElementById("result");
-    const placeholders = loadingImagesContainer.querySelectorAll('.loading-placeholder');
-    if (placeholders.length > 0) {
-        loadingImagesContainer.removeChild(placeholders[0]);
+    let $placeholders = $("#result .loading-placeholder");
+    if ($placeholders.length > 0) {
+        $placeholders.first().remove();
     }
 }
 
 function clearPlaceholders() {
-    const loadingImagesContainer = document.getElementById("result");
-    const placeholders = loadingImagesContainer.querySelectorAll('.loading-placeholder');
-    placeholders.forEach(placeholder => {
-        loadingImagesContainer.removeChild(placeholder);
-    });
+    $("#result .loading-placeholder").remove();
 }
 
 function decreaseFrameCount() {
@@ -181,23 +167,22 @@ function decreaseFrameCount() {
 }
 
 function convertToBase64() {
-    const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
-    const reader = new FileReader();
+    let file = $('#fileInput')[0].files[0];
+    let reader = new FileReader();
 
     if (file) {
         reader.readAsDataURL(file);
         reader.onload = function () {
             base64Image = reader.result;
 
-            const imgElement = document.createElement("img");
-            imgElement.src = base64Image;
-            imgElement.className = "img-fluid imgPreview";
+            let $imgElement = $("<img>")
+                .attr("src", base64Image)
+                .addClass("img-fluid imgPreview");
 
-            document.getElementById("preview").appendChild(imgElement);
+            $("#preview").append($imgElement);
 
-            $('#glassResult').hide();
-            $('#glass-selector').show(200);
+            $("#glassResult").hide();
+            $("#glass-selector").show(200);
         };
         reader.onerror = function (error) {
             console.error("Chyba při čtení souboru:", error);
@@ -232,22 +217,22 @@ $(document).ready(function () {
         let betterData = [];
 
         if (data.length > 0) {
-            betterData = data.map(({ean, name, gender}) => ({ean, name, gender}));
+            betterData = data.map(({ ean, name, gender }) => ({ ean, name, gender }));
         }
 
         return betterData;
     }
 
     let selectedType = null;
-    document.getElementById("type-select").addEventListener("change", function () {
-        selectedType = this.value;
+    $("#type-select").on("change", function () {
+        selectedType = $(this).val();
         filterGlasses(selectedType);
     });
 
     async function filterGlasses(type) {
         const data = await refactorData();
-        const glassesListContainer = $('#glasses-list');
-        glassesListContainer.empty();
+        const $glassesListContainer = $('#glasses-list');
+        $glassesListContainer.empty();
 
         $(data).each(function (index, value) {
             let src = "img/" + value.name;
@@ -260,7 +245,7 @@ $(document).ready(function () {
                         </div>
                     </div>
                 `;
-                glassesListContainer.append(html);
+                $glassesListContainer.append(html);
             }
         });
     }
@@ -268,6 +253,6 @@ $(document).ready(function () {
     filterGlasses(selectedType);
 });
 
-$("#toTop").click(function () {
-    $("html, body").animate({scrollTop: 0}, 500);
+$("#toTop").on("click", function () {
+    $("html, body").animate({ scrollTop: 0 }, 500);
 });
