@@ -1,10 +1,17 @@
 let base64Image = "";
 let generatedFrames = new Set();
 let countFramesToGenerate = 0;
+let isGenerating = false;
 
 function handleImageClick(clickedImg) {
-    clickedImg.classList.toggle('active');
+    if (!isGenerating) {
+        clickedImg.classList.toggle('active');
+    }
 }
+
+document.getElementById("pdSlider").addEventListener("input", function () {
+    document.getElementById("pdValue").innerText = this.value;
+});
 
 var params = {
     apiKey: 'X2jYvgRy7LnBexatVDTHYwGr3Ojh0RDrvOyKkbXT',
@@ -55,37 +62,36 @@ function showRendered(data, ean) {
     }
 
     const container = document.createElement("div");
-    container.className = "col-xxl-4 col-xl-6";
+    container.className = "col-md-4 col-xxl-4 col-xl-6";
 
-   /* const eanText = document.createElement("p");
-    eanText.innerText = "EAN: " + ean;
-    eanText.style.textAlign = "center";*/
-
-    // Create the image element
     const imgElement = document.createElement("img");
     imgElement.src = data.data;
-    imgElement.className = "img-fluid imgResult";
+    imgElement.className = "img-fluid imgResult mt-3 mb-3 p-2";
 
     const downloadBtn = document.createElement("a");
     downloadBtn.innerText = "Stáhnout";
     downloadBtn.style.textAlign = "center";
     downloadBtn.download = ean + ".jpg";
     downloadBtn.href = data.data;
+    downloadBtn.className = "btn btn-success w-100 mt-3";
 
-    downloadBtn.addEventListener("click", function() {
-        downloadBtn.classList.add("red");
+    downloadBtn.addEventListener("click", function () {
+        downloadBtn.classList.add("btn-danger");
+        downloadBtn.classList.remove("btn-success");
     });
 
-
-    //container.appendChild(eanText);
     container.appendChild(imgElement);
     container.appendChild(downloadBtn);
 
     document.getElementById("result").appendChild(container);
 }
 
-
 document.getElementById("generate").addEventListener("click", async function () {
+    if (isGenerating) {
+        alert("Generování již probíhá. Počkejte, prosím.");
+        return;
+    }
+
     if (base64Image) {
         const selectedFrames = [];
         document.querySelectorAll('.gallery-img.active').forEach(img => {
@@ -100,10 +106,9 @@ document.getElementById("generate").addEventListener("click", async function () 
             return;
         }
 
-        countFramesToGenerate += selectedFrames.length; // Zvýšení počtu generovaných obrázků
-        console.log("Počet obrázků k vygenerování: " + countFramesToGenerate);
+        isGenerating = true;
+        countFramesToGenerate += selectedFrames.length;
 
-        // Přidání placeholderů
         addLoadingPlaceholders(selectedFrames.length);
 
         for (const frame of selectedFrames) {
@@ -116,13 +121,20 @@ document.getElementById("generate").addEventListener("click", async function () 
                 }
             });
         }
+
+        isGenerating = false;
+        if (countFramesToGenerate === 0) {
+            clearPlaceholders();
+        }
     } else {
         alert("Nejprve nahrajte fotografii.");
     }
 });
 
 function generateFrame(frame) {
+    const pdValue = document.getElementById("pdSlider").value;
     return new Promise((resolve) => {
+        fitmixInstance.setPupillaryDistance(parseInt(pdValue));
         fitmixInstance.setFrame([frame]);
         fitmixInstance.setTryonPicture(base64Image);
 
@@ -133,6 +145,7 @@ function generateFrame(frame) {
         };
     });
 }
+
 function addLoadingPlaceholders(count) {
     const loadingImagesContainer = document.getElementById("result");
     for (let i = 0; i < count; i++) {
@@ -145,9 +158,18 @@ function addLoadingPlaceholders(count) {
 
 function removeLoadingPlaceholder() {
     const loadingImagesContainer = document.getElementById("result");
-    if (loadingImagesContainer.children.length > 0) {
-        loadingImagesContainer.removeChild(loadingImagesContainer.children[0]);
+    const placeholders = loadingImagesContainer.querySelectorAll('.loading-placeholder');
+    if (placeholders.length > 0) {
+        loadingImagesContainer.removeChild(placeholders[0]);
     }
+}
+
+function clearPlaceholders() {
+    const loadingImagesContainer = document.getElementById("result");
+    const placeholders = loadingImagesContainer.querySelectorAll('.loading-placeholder');
+    placeholders.forEach(placeholder => {
+        loadingImagesContainer.removeChild(placeholder);
+    });
 }
 
 function decreaseFrameCount() {
@@ -183,28 +205,38 @@ function convertToBase64() {
     }
 }
 
-// Glasses
 $(document).ready(function () {
-
-    const collectionId = '1ba4e949-9290-4b1a-9e53-715e5d118b8d';
-    const apiKey = 'fittingbox/97973cd7b4475577be04ccec260615fb';
-    const baseUrl = 'https://api.widencollective.com/v2/collections';
-
-    const headers = {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-    };
-
     async function getData() {
-        const response = await fetch(`${baseUrl}/${collectionId}/assets`, { headers });
-        if (!response.ok) {
-            throw new Error(`Chyba: HTTP kód ${response.status}`);
+        try {
+            const response = await fetch("./data/data.csv");
+            const csvText = await response.text();
+
+            return new Promise((resolve) => {
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    transformHeader: header => header.trim().toLowerCase(),
+                    complete: function (results) {
+                        resolve(results.data);
+                    }
+                });
+            });
+        } catch (error) {
+            console.error("Chyba při načítání CSV souboru:", error);
+            return [];
         }
-        return response.json();
     }
 
+    async function refactorData() {
+        const data = await getData();
+        let betterData = [];
 
-    const data = getData();
+        if (data.length > 0) {
+            betterData = data.map(({ean, name, gender}) => ({ean, name, gender}));
+        }
+
+        return betterData;
+    }
 
     let selectedType = null;
     document.getElementById("type-select").addEventListener("change", function () {
@@ -212,26 +244,23 @@ $(document).ready(function () {
         filterGlasses(selectedType);
     });
 
-    function filterGlasses(type) {
-        $.each(data, function (key, value) {
-            const galleryId = "#gal-" + key;
-            const $gallery = $(galleryId + " .row.row-cols-12");
-            if ($gallery.length) {
-                $gallery.empty();
-                $.each(value, function (index, image) {
-                    if (selectedType === null || selectedType === "all" || selectedType === image.type) {
-                        const $col = $("<div>").addClass("col-md-3");
-                        const $img = $("<img>")
-                            .attr("src", image.src)
-                            .addClass("img-fluid gallery-img")
-                            .attr("data-ean", image.ean)
-                            .attr("onclick", "handleImageClick(this)");
-                        $col.append($img);
-                        $gallery.append($col);
-                    }
-                });
-            } else {
-                console.error("Galerie s ID " + galleryId + " nebyla nalezena.");
+    async function filterGlasses(type) {
+        const data = await refactorData();
+        const glassesListContainer = $('#glasses-list');
+        glassesListContainer.empty();
+
+        $(data).each(function (index, value) {
+            let src = "img/" + value.name;
+            if (value.gender === type || type === null || type === "all") {
+                const html = `
+                    <div class="col-md-3">
+                        <div class="card">
+                            <img src="${src}" class="card-img-top img-fluid gallery-img" alt="${value.name}" 
+                                 data-ean="${value.ean}" onclick="handleImageClick(this)">
+                        </div>
+                    </div>
+                `;
+                glassesListContainer.append(html);
             }
         });
     }
@@ -239,45 +268,6 @@ $(document).ready(function () {
     filterGlasses(selectedType);
 });
 
-/* const data = {
-    "rectangular": [
-        {"src": "images/0886895624275.jpeg", "ean": "0886895624275", "type": "men"},
-        {"src": "images/886895588775.jpeg", "ean": "886895588775", "type": "woman"},
-        {"src": "images/0886895497794.jpeg", "ean": "0886895497794", "type": "men"}
-    ],
-    "oval": [
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8053672909258", "type": "woman"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "0888392486523", "type": "men"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "8056597233958", "type": "woman"}
-    ],
-    "square": [
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567892", "type": "men"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543212", "type": "woman"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334452", "type": "men"}
-    ],
-    "round": [
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567893", "type": "woman"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543213", "type": "men"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334453", "type": "woman"}
-    ],
-    "aviator": [
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567894", "type": "men"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543214", "type": "woman"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334454", "type": "men"}
-    ],
-    "cat-eye": [
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567895", "type": "woman"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543215", "type": "men"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334455", "type": "woman"}
-    ],
-    "wayfarer": [
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567896", "type": "men"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543216", "type": "woman"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334456", "type": "men"}
-    ],
-    "oversize": [
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1234567897", "type": "woman"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "9876543217", "type": "men"},
-        {"src": "https://eshop.doktorklain.cz/files/106040_size3.webp", "ean": "1122334457", "type": "woman"}
-    ]
-}; */
+$("#toTop").click(function () {
+    $("html, body").animate({scrollTop: 0}, 500);
+});
