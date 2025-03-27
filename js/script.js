@@ -4,7 +4,7 @@ let countFramesToGenerate = 0;
 let isGenerating = false;
 
 function handleImageClick(clickedImg) {
-    if (!isGenerating) {
+    if (!isGenerating && !$(clickedImg).hasClass("generated")) {
         $(clickedImg).toggleClass('active');
     }
 }
@@ -60,7 +60,7 @@ function showRendered(data, ean) {
     }
 
     let $container = $("<div>").addClass("col-md-4 col-xxl-4 col-xl-6");
-    let $imgElement = $("<img>").attr("src", data.data)
+    let $imgElement = $("<img>").attr({"data-ean": ean, "src": data.data })
                                 .addClass("img-fluid imgResult mt-3 mb-3 p-2");
 
     let $downloadBtn = $("<a>")
@@ -73,7 +73,23 @@ function showRendered(data, ean) {
         $(this).removeClass("btn-success").addClass("btn-danger");
     });
 
-    $container.append($imgElement, $downloadBtn);
+    let $regenerateBtn = $("<button>")
+        .text("Přegenerovat")
+        .css("text-align", "center")
+        .attr({"data-ean": ean })
+        .addClass("btn btn-warning w-100 mt-3");
+
+    $regenerateBtn.on("click", async function (event) {
+        event.stopPropagation();
+
+        let frame = $(this).data("ean");
+
+        $(this).closest(".col-md-4").remove();
+
+        await generateFrame(frame);
+    });
+
+    $container.append($imgElement, $downloadBtn, $regenerateBtn);
     $("#result").append($container);
 }
 
@@ -108,7 +124,8 @@ $("#generate").on("click", async function () {
 
             $(".gallery-img").each(function () {
                 if ($(this).data("ean") === frame) {
-                    $(this).parent().hide(300);
+                   // $(this).parent().hide(300);
+                    $(this).addClass("generated").removeClass("active");
                 }
             });
         }
@@ -180,6 +197,7 @@ function convertToBase64() {
                 .addClass("img-fluid imgPreview");
 
             $("#preview").append($imgElement);
+            $("#pdSliderContainer").appendTo("#preview").addClass("m-5");
 
             $("#glassResult").hide();
             $("#glass-selector").show(200);

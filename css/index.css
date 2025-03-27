@@ -1,3 +1,6 @@
+body {
+   /* background-color: #E7E4F1;*/
+}
 .gallery-img {
     cursor: pointer;
     transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
@@ -8,6 +11,9 @@
 }
 .gallery-img.active {
     border-color: #007bff;
+}
+.gallery-img.generated {
+    border-color: #ff6600;
 }
 
 #fitmix-container {

@@ -7,31 +7,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://vto-advanced-integration-api.fittingbox.com/index.js" type="text/javascript"></script>
-    <link href="css/index.css?v=4" rel="stylesheet">
+    <link href="css/index.css?v=6" rel="stylesheet">
 </head>
 <body>
 <main>
     <div class="container-fluid px-4 py-5">
-        <img src="https://www.doktorklain.cz/face-logo.svg" alt="Logo Dr.Klain" class="float-start pe-3">
-        <h2 class="pb-2 border-bottom">Dr.Klain</h2>
-
+        <a href="index.php">
+            <img src="https://www.doktorklain.cz/face-logo.svg" alt="Logo Dr.Klain" class="float-start pe-3">
+        </a>
+            <h2 class="pb-2 border-bottom">Dr.Klain</h2>
+        <div id="fitmix-container"></div>
         <div class="row" id="glassResult">
-            <div id="fitmix-container"></div>
             <div class="mt-5">
-                <h3 class="text-center mb-3">Vlož fotografii zákazníka</h3>
-                <select class="form-select mb-3" name="typ" id="type-select">
-                    <option value="all">Všechny</option>
-                    <option value="Male">Pánské</option>
-                    <option value="Female">Dámské</option>
-                </select>
-                <div id="pdSliderContainer" style="display: block;" class="mt-3 text-center">
-                    <label for="pdSlider" class="form-label">Vzdálenost zornic (mm):</label>
-                    <input type="range" class="form-range" id="pdSlider" min="35" max="90" value="65">
-                    <p id="pdValue">65</p>
+                <h3 class="text-center mb-3">AI stylista</h3>
+                <div class="row">
+                    <div class="col border p-2">
+                        <label for="type-select" class="form-label">Filtr brýlí</label>
+                        <select class="form-select" name="typ" id="type-select">
+                            <option value="all">Všechny</option>
+                            <option value="Male">Pánské</option>
+                            <option value="Female">Dámské</option>
+                        </select>
+                    </div>
+                    <div class="col border p-2 mx-3">
+                        <div id="pdSliderContainer" style="display: block;" class=" text-center">
+                            <label for="pdSlider" class="form-label">Vzdálenost zornic (mm)</label>
+                            <input type="range" class="form-range" id="pdSlider" min="45" max="80" value="63">
+                            <p id="pdValue">63</p>
+                        </div>
+                    </div>
+                    <div class="col border p-2">
+                        <label for="fileInput" class="form-label">Vyber fotografii</label>
+                        <input type="file" class="form-control" id="fileInput" accept="image/*" onchange="convertToBase64()">
+                        <p class="mt-3 text-center" id="base64Output"></p>
+                    </div>
                 </div>
-                <input type="file" class="form-control" id="fileInput" accept="image/*" onchange="convertToBase64()">
-
-                <p class="mt-3 text-center" id="base64Output"></p>
             </div>
         </div>
 
@@ -67,6 +77,6 @@
         crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="js/script.js?v=6"></script>
+<script src="js/script.js?v=<?php echo time();?>"></script>
 </body>
 </html>
